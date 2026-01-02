@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  bitcoin:
+    image: kylemanna/bitcoind:latest
+    volumes:
+      - ./data/bitcoin:/bitcoin/.bitcoin
+    command: -testnet -server -rpcuser=pi -rpcpassword=swap123 -txindex=1 -prune=550
+
+  litecoin:
+    image: kylemanna/litecoind:latest
+    volumes:
+      - ./data/litecoin:/litecoin/.litecoin
+    command: -testnet -server -rpcuser=pi -rpcpassword=swap123 -txindex=1 -prune=550
+
+  dogecoin:
+    image: ghcr.io/dogecoinfoundation/dogecoin:latest
+    volumes:
+      - ./data/dogecoin:/dogecoin/.dogecoin
+    command: -testnet -server -rpcuser=pi -rpcpassword=swap123 -txindex=1 -prune=550
+
+  monero:
+    image: sethsimmons/simple-monero-wallet-rpc:latest
+    volumes:
+      - ./data/monero:/wallet
+    command: --testnet --wallet-dir /wallet --rpc-bind-port 18081 --disable-rpc-login
+
+  engine:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./engine:/app
+      - ./public:/public
+    ports:
+      - "8080:8080"
+    command: sh -c "npm install && node index.js"
